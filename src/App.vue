@@ -3,8 +3,8 @@ import { SpiffCommerceClient } from '@spiffcommerce/core';
 import { SpiffCommerce3DPreviewService } from '@spiffcommerce/preview';
 import { ref, onMounted } from 'vue'
 
-const integrationProductId = '5141150b-8419-4e24-ae3f-9cab47a7920f'; // Sample Serving Board
-const workflowId = '3b09df2b-8808-4b1c-955a-d4172e706d11'; // Sample Serving Board Workflow
+const integrationProductId = 'b8b74dc9-655b-474e-b2b6-338db397e689';
+const workflowId = '653b6369-89d1-4302-ba1e-ee50117e3c73';
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const client = new SpiffCommerceClient({});
