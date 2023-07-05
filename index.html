@@ -1,13 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./src/assets/BT5.css">
+  <title>Vite App</title>
+</head>
+
+<body>
+  <!-- <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script> -->
+  <div id="product-customiser">
+    <div id="BT5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-7">
+            <canvas id="preview" ref="canvasRef" class="mh-100 mw-100"></canvas>
+          </div>
+          <div class="col-lg-5">
+            <!-- <div v-for="(item, index) in workflowExperience">
+              <p v-text="index"></p>
+              <p v-for="(opt, i) in index">
+                <p v-text="i"></p>
+              </p>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <script type="module">
+    import { SpiffCommerceClient } from '@spiffcommerce/core';
+    import { SpiffCommerce3DPreviewService } from '@spiffcommerce/preview';
+    Vue.createApp({
+      data() {
+        return {
+          integrationProductId: 'b8b74dc9-655b-474e-b2b6-338db397e689',
+          workflowId: '653b6369-89d1-4302-ba1e-ee50117e3c73',
+          canvasRefEle: this.$refs<HTMLCanvasElement | null>(null),
+          client: new SpiffCommerceClient({}),
+          workflowExperience: null,
+          steps: null,
+        }
+      },
+      mounted(){
+        this.canvasRefEle = this.$refs.canvasRef;
+        console.log(this.canvasRefEle);
+        this.initialize().then((experience) => {
+          console.log(experience);
+          if(!this.canvasRefEle) 
+            return;
+          experience.getWorkflowManager().getPreviewService().registerView(this.canvasRefEle);
+        });
+        console.log("workflowExperience: "+this.workflowExperience);
+      },
+      methods:{
+        async initialize(){
+          this.workflowExperience = await this.client.getWorkflowExperience(
+            undefined,
+            undefined,
+            (workflow) => {
+              return new SpiffCommerce3DPreviewService(workflow.globalPreviewConfig);
+            },
+            {
+              type: 'integration',
+              integrationProductId: this.integrationProductId,
+              workflowId: this.workflowId,
+            },
+          );
+          return this.workflowExperience;
+        },
+        onScenesChange(scenes){
+          const renderableSteps = scenes.flatMap((s) => s.renderableSteps);
+          const steps = workflowExperience.getSteps().filter((s) => renderableSteps.includes(s.getId()));
+          this.steps = steps;
+        }
+      }
+    }).mount("#product-customiser");
+  </script>
+</body>
+
 </html>
