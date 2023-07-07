@@ -23,19 +23,21 @@
             <div id="steps">
               <div v-for="(step, index) in steps" class="py-2 fz-13">
                 <h5 v-text="step.getName()"></h5>
+                <!-- <h5 v-text="step.getId()"></h5> -->
                 <div v-if="step.getType() == 'Model'" class="d-flex flex-wrap text-center">
                   <div v-for="variant in step.getAvailableVariants()" class="p-1">
                     <div :key="variant.getId()" @click="step.selectVariant(variant)">
                       <img :src="variant.getThumbnail()" class="variant-image border img-fluid br-5">
                       <p class="mb-0" v-text="variant.getName()"></p>
-                      <p class="mb-0" v-text="variant.price"></p>
+                      <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
                     </div>
                   </div>
                 </div>
                 <div v-if="step.getType() == 'Shape'" class="d-flex flex-wrap text-center">
                   <div v-for="variant in step.getAvailableVariants()" class="p-1">
-                    <!-- <h5 v-text="step.getColors()"></h5> -->
-                    <div class="color-bg" :style="{background: variant.getColor()}" :key="variant.getId()" @click="step.selectVariant(variant)"></div>
+                    <div :key="variant.getId()" :id="variant.getId()" @click="step.setColor(variant.getId(),variant.getColor())">
+                      <div class="color-bg" :style="{background: variant.getColor()}"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -60,6 +62,7 @@
           client: new SpiffCommerceClient({}),
           workflowExperience: null,
           steps: null,
+          colors: null,
         }
       },
       mounted(){
@@ -92,6 +95,28 @@
           const steps = this.workflowExperience.getSteps().filter((s) => renderableSteps.includes(s.getId()));
           this.steps = steps;
         },
+        changeColor(currentVariant, currentStep){
+          // console.log(currentStep.getColors());
+          // const colors = currentStep.getColors();
+          // colors.then((array) =>{
+          //   console.log(array);
+          //   this.colors = array;
+          // });
+          currentStep.getColors().then(function(result) {
+                      return result
+                    });
+          // console.log(this.steps[2].getColors());
+          // this.colors = this.steps[2].getColors();
+          // this.steps.setColor(key, value);
+
+          // console.log(currentStep.getId());
+          // const step = this.workflowExperience.getStepById("43693d93-6c0e-5023-4d22-6e16bc24aa2e");
+          // currentVariant.setFill(currentVariant.getColor());
+          
+          // currentStep.getFill();
+          // currentStep.setColor(currentVariant.getId(), currentVariant.getColor())
+          // console.log(step);
+        }
       }
     }).mount("#product-customiser");
   </script>
