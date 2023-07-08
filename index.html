@@ -24,14 +24,14 @@
               <div class="p-3 border br-5 shadow mt-2 d-flex justify-content-between align-items-center">
                 <h2 class="h5">Build a Funsquare</h2>
                 <span v-text="price = 0" class="d-none"></span>
-                <div v-for="(step, index) in steps" class="fz-13 d-none">
+                <div v-for="(step, index) in steps" class="d-none">
                   <!-- <p class="mb-0" v-text="totalPrice"></p>
                   <p class="mb-0" v-text="Number(((step.getCurrentVariant().getPrice()) / 100).toFixed(2))"></p> -->
                   <p class="mb-0"><span v-text="price += totalPrice+(Number(((step.getCurrentVariant().getPrice()) / 100).toFixed(2)))"></span></p>
                   <hr>
                   <br>
                 </div>
-                <p class="mb-0">$<span v-text="price"></span>.00</p>
+                <p class="mb-0 h5">$<span v-text="price"></span>.00</p>
               </div>
               <div class="p-3 border br-5 shadow mt-2">
                 <div v-for="(step, index) in steps" class="fz-11 py-1">
