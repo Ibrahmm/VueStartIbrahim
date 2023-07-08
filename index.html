@@ -19,29 +19,50 @@
           <div class="col-lg-8">
             <canvas id="preview" ref="canvasRef"></canvas>
           </div>
-          <div class="col-lg-4 fz-13">
+          <div class="col-lg-4 ps-0 fz-13 py-2">
             <div id="steps">
-              <div v-for="(step, index) in steps" class="py-2 fz-13">
-                <h5 v-text="step.getName()"></h5>
-                <!-- <h5 v-text="step.getId()"></h5> -->
-                <div v-if="step.getType() == 'Model'" class="d-flex flex-wrap text-center">
-                  <div v-for="variant in step.getAvailableVariants()" class="p-1">
-                    <div :key="variant.getId()" @click="step.selectVariant(variant)">
-                      <img :src="variant.getThumbnail()" class="variant-image border img-fluid br-5">
-                      <p class="mb-0" v-text="variant.getName()"></p>
-                      <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
+              <div class="p-3 border br-5 shadow mt-2 d-flex justify-content-between align-items-center">
+                <h2 class="h5">Build a Funsquare</h2>
+                <span v-text="price = 0" class="d-none"></span>
+                <div v-for="(step, index) in steps" class="fz-13 d-none">
+                  <!-- <p class="mb-0" v-text="totalPrice"></p>
+                  <p class="mb-0" v-text="Number(((step.getCurrentVariant().getPrice()) / 100).toFixed(2))"></p> -->
+                  <p class="mb-0"><span v-text="price += totalPrice+(Number(((step.getCurrentVariant().getPrice()) / 100).toFixed(2)))"></span></p>
+                  <hr>
+                  <br>
+                </div>
+                <p class="mb-0">$<span v-text="price"></span>.00</p>
+              </div>
+              <div class="p-3 border br-5 shadow mt-2">
+                <div v-for="(step, index) in steps" class="fz-11 py-1">
+                  <h5 v-text="step.getName()"></h5>
+                  <div v-if="step.getType() == 'Model'" class="d-flex flex-nowrap oxs remove-scrollbar text-center">
+                    <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
+                      <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
+                        <img :src="variant.getThumbnail()" class="border img-fluid br-5">
+                        <p class="mb-0" v-text="variant.getName()"></p>
+                        <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div v-if="step.getType() == 'Shape'" class="d-flex flex-wrap text-center">
-                  <div v-for="variant in step.getAvailableVariants()" class="p-1">
-                    <div :key="variant.getId()" :id="variant.getId()" @click="step.setColor(variant.getId(),variant.getColor())">
-                      <div class="color-bg" :style="{background: variant.getColor()}"></div>
+                  <div v-if="step.getType() == 'Shape'" class="d-flex flex-nowrap oxs remove-scrollbar text-center">
+                    <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
+                      <div :key="variant.getId()" :id="variant.getId()" @click="changeColor(step, variant.getId())" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
+                        <div class="color-bg" :style="{background: variant.getColor()}"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-
+              <div class="p-3 border br-5 shadow mt-2">
+                <h3>Confirm Design</h3>
+                <div v-for="(step, index) in steps" class="fz-13">
+                  <div v-if="step.getType() == 'Model'" class="d-flex justify-content-between py-1">
+                    <p class="mb-0"> selection <span v-text="step.getName()"></span></p>
+                    <p class="mb-0" v-text="step.getCurrentVariant().getName()"></p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -62,7 +83,8 @@
           client: new SpiffCommerceClient({}),
           workflowExperience: null,
           steps: null,
-          colors: null,
+          totalPrice: 0,
+          price: 0,
         }
       },
       mounted(){
@@ -91,31 +113,20 @@
           return this.workflowExperience;
         },
         onScenesChange(scenes){
+          this.totalPrice = 0;
           const renderableSteps = scenes.flatMap((s) => s.renderableSteps);
           const steps = this.workflowExperience.getSteps().filter((s) => renderableSteps.includes(s.getId()));
           this.steps = steps;
         },
-        changeColor(currentVariant, currentStep){
-          // console.log(currentStep.getColors());
-          // const colors = currentStep.getColors();
-          // colors.then((array) =>{
-          //   console.log(array);
-          //   this.colors = array;
-          // });
+        changeColor(currentStep, currentVariantID){
           currentStep.getColors().then(function(result) {
-                      return result
-                    });
-          // console.log(this.steps[2].getColors());
-          // this.colors = this.steps[2].getColors();
-          // this.steps.setColor(key, value);
-
-          // console.log(currentStep.getId());
-          // const step = this.workflowExperience.getStepById("43693d93-6c0e-5023-4d22-6e16bc24aa2e");
-          // currentVariant.setFill(currentVariant.getColor());
-          
-          // currentStep.getFill();
-          // currentStep.setColor(currentVariant.getId(), currentVariant.getColor())
-          // console.log(step);
+            result.map((res) => {
+              if(res.variant.id == currentVariantID){
+                console.log(res.variant.id + " - " + currentVariantID);
+                currentStep.setColor(res);
+              }
+            })
+          });
         }
       }
     }).mount("#product-customiser");

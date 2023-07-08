@@ -16117,18 +16117,24 @@ fieldset:disabled #BT5 .btn {
 }
 #product-customiser #BT5 #steps .color-bg{
   width: 30px;
+  max-width: 30px;
+  min-width: 30px;
   height: 30px;
   cursor: pointer;
   border-radius: 50%;
 }
 #product-customiser #BT5 #steps .variant-image{
   width: 70px;
-  height: 70px;
+  max-width: 70px;
+  min-width: 70px;
   cursor: pointer;
 }
-#product-customiser #BT5 #steps .selected .variant-image,
+#product-customiser #BT5 #steps .variant-image img{
+  height: 70px;
+}
+#product-customiser #BT5 #steps .selected.variant-image img,
 #product-customiser #BT5 #steps .selected .color-bg{
-  border: 1px solid #000 !important;
+  border: 2px solid #000 !important;
 }
 #product-customiser #BT5 #steps input[name="choose-base-thickness"]{
   visibility: hidden;
@@ -16137,4 +16143,11 @@ fieldset:disabled #BT5 .btn {
 }
 #product-customiser #BT5 #steps input[name="choose-base-thickness"]:checked + label .variant-image{
   border: 1px solid #000 !important;
+}
+#product-customiser .remove-scrollbar{
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+#product-customiser .remove-scrollbar::-webkit-scrollbar {
+  display: none;
 }
