@@ -63,9 +63,9 @@
                   </div>
                 </div>
               </div>
-              <!-- <div class="mt-3">
+              <div class="mt-3">
                 <button class="btn btn-primary w-100 text-white br-0">Add To Cart</button>
-              </div> -->
+              </div>
             </div>
           </div>
         </div>
@@ -129,6 +129,25 @@
                 currentStep.setColor(res);
               }
             })
+          });
+        },
+        addToCart(variant_id){
+          fetch('https://www.funsquare.com.au/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              quantity: 1,
+              id: variant_id, // Make sure `variant_id` is defined in your component's data or props
+            }),
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data.id);
+          })
+          .catch((error) => {
+            console.error(error);
           });
         }
       }
