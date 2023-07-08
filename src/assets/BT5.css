@@ -16151,3 +16151,19 @@ fieldset:disabled #BT5 .btn {
 #product-customiser .remove-scrollbar::-webkit-scrollbar {
   display: none;
 }
+@media (max-width: 992px) {
+  #product-customiser #BT5 #preview{
+    height: 30vh;
+    min-height: auto;
+    max-height: auto;
+  }
+  #product-customiser #BT5 .steps-block{
+    height: 65vh;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  #product-customiser #BT5 .steps-block::-webkit-scrollbar {
+    display: none;
+  }
+}
