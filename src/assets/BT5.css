@@ -16214,9 +16214,20 @@ fieldset:disabled #BT5 .btn {
   padding: 10px 30px;
   font-family: 'Nunito', sans-serif !important;
 }
-#product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n+1){
-  background-color: #FCFCFF;
+#product-customiser #BT5 .selection-boxes{
   border: 2px dashed #D6D8FF;
+  background-color: #FCFCFF;
+  border-radius: 5px;
+}
+#product-customiser #BT5 .selection-boxes .selection-box{
+  margin-bottom: 5px;
+}
+#product-customiser #BT5 .selection-boxes .selection-box:last-child{
+  margin-bottom: 0px;
+}
+#product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n+1){
+  /* background-color: #FCFCFF; */
+  /* border: 2px dashed #D6D8FF; */
   color: #724D37;
 }
 #product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n+1) .bg-color{
@@ -16226,8 +16237,8 @@ fieldset:disabled #BT5 .btn {
   color: #fff;
 }
 #product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n+2){
-  background-color: #FFFAFB;
-  border: 2px dashed #FFD1DB;
+  /* background-color: #FFFAFB; */
+  /* border: 2px dashed #FFD1DB; */
   color: #724D37;
 }
 #product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n+2) .bg-color{
@@ -16237,8 +16248,8 @@ fieldset:disabled #BT5 .btn {
   color: #fff;
 }
 #product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n){
-  background-color: #FFFCF9;
-  border: 2px dashed #FFE3C2;
+  /* background-color: #FFFCF9; */
+  /* border: 2px dashed #FFE3C2; */
   color: #724D37;
 }
 #product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n) .bg-color{
@@ -16301,10 +16312,13 @@ fieldset:disabled #BT5 .btn {
   -webkit-transition: .4s;
   transition: .4s;
 }
-#product-customiser #BT5 .slider.slider1:before{
+#product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n+1) .slider:before{
+  background-color: #7C81FF;
+}
+#product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n+2) .slider:before{
   background-color: #FF7E9A;
 }
-#product-customiser #BT5 .slider.slider2:before{
+#product-customiser #BT5 .selection-boxes .selection-box:nth-child(3n) .slider:before{
   background-color: #FF961A;
 }
 

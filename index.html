@@ -37,15 +37,50 @@
                 <p class="mb-0 fz-20">$<span v-text="price"></span>.00</p>
               </div>
               <div class="selection-boxes">
-                <div class="oh br-5 mt-2 fz-9 selection-box">
-                  <div v-for="(step, index) in steps">
+                <div class="oh br-5 fz-9">
+                  <div v-for="(step, index) in steps" class="selection-box">
                     <div class="inner-box">
-                      <div v-if="step.getType() == 'Model' && step.getName() == 'Choose Base Thickness'">
+                      <div v-if="step.getType() == 'Model'">
                         <div class="head px-3 py-2 bg-color text-color">
-                          <h3 class="h6 PF mb-0">Choose Base Design</h3>
+                          <div class="d-flex align-items-center justify-content-between">
+                            <h3 class="h6 PF mb-0" v-text="step.getName()"></h3>
+                            <div v-if="step.getName() == 'Choose Your Armrests' || step.getName() == 'Extra Fun '">
+                              <label class="switch">
+                                <input type="checkbox" :checked="ChooseYourArmrests" @click="toggleBlock" v-if="step.getName() == 'Choose Your Armrests'">
+                                <input type="checkbox" :checked="ChooseExtraFun" @click="toggleExtraFun" v-if="step.getName() == 'Extra Fun '">
+                                <span class="slider round"></span>
+                              </label>
+                            </div>
+                          </div>
                         </div>
-                        <div class="p-2">
-                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center" v-if="step.getName() == 'Choose Base Thickness'">
+                        <div v-if="step.getName() == 'Choose Your Armrests'">
+                          <div class="p-2" :class="ChooseYourArmrests == false ? 'd-none' : ''">
+                            <div class="d-flex flex-nowrap oxs remove-scrollbar text-center">
+                              <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
+                                <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''" :id="index == 0 ? 'first-armrests' : ''">
+                                  <img :src="variant.getThumbnail()" class="border img-fluid br-5">
+                                  <p class="mb-0" v-text="variant.getName()"></p>
+                                  <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div v-else-if="step.getName() == 'Extra Fun '">
+                          <div class="p-2" :class="ChooseExtraFun == false ? 'd-none' : ''">
+                            <div class="d-flex flex-nowrap oxs remove-scrollbar text-center">
+                              <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
+                                <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''" :id="index == 0 ? 'first-extra-fun' : ''">
+                                  <img :src="variant.getThumbnail()" class="border img-fluid br-5">
+                                  <p class="mb-0" v-text="variant.getName()"></p>
+                                  <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div v-else class="p-2">
+                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center" v-if="">
                             <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
                               <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
                                 <img :src="variant.getThumbnail()" class="border img-fluid br-5">
@@ -57,135 +92,7 @@
                         </div>
                       </div>
                       <div v-if="step.getType() == 'Shape'">
-                        <div class="p-2" v-if="step.getName() == 'Lower Base Colour ' || step.getName() == 'Upper Base Colour ' || step.getName() == 'Upper Base Colour'">
-                          <p class="fz-15 mb-1" v-text="step.getName()"></p>
-                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center">
-                            <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
-                              <div :key="variant.getId()" :id="variant.getId()" @click="changeColor(step, variant.getId())" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
-                                <div class="color-bg" :style="{background: variant.getColor()}"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="p-2 border-top" v-if="step.getName() == 'Trapezium Colour'">
-                          <p class="fz-15 mb-1" v-text="step.getName()"></p>
-                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center">
-                            <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
-                              <div :key="variant.getId()" :id="variant.getId()" @click="changeColor(step, variant.getId())" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
-                                <div class="color-bg" :style="{background: variant.getColor()}"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="oh br-5 mt-2 fz-9 selection-box">
-                  <div v-for="(step, index) in steps">
-                    <div class="inner-box">
-                      <div v-if="step.getType() == 'Model' && step.getName() == 'Choose Your Armrests'">
-                        <div class="head px-3 py-2 bg-color text-color">
-                          <div class="d-flex align-items-center justify-content-between">
-                            <h3 class="h6 PF mb-0" v-text="step.getName()"></h3>
-                            <div>
-                              <label class="switch">
-                                <input type="checkbox" @click="toggleBlock">
-                                <span class="slider round slider1"></span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="p-2" :class="ChooseYourArmrests == false ? 'd-none' : ''">
-                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center" v-if="step.getName() == 'Choose Your Armrests'">
-                            <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
-                              <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''" :id="index == 0 ? 'first-armrests' : ''">
-                                <img :src="variant.getThumbnail()" class="border img-fluid br-5">
-                                <p class="mb-0" v-text="variant.getName()"></p>
-                                <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div v-if="step.getType() == 'Shape'" :class="ChooseYourArmrests == false ? 'd-none' : ''">
-                        <div class="p-2" v-if="step.getName() == 'Armrest Colour '">
-                          <p class="fz-15 mb-1" v-text="step.getName()"></p>
-                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center">
-                            <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
-                              <div :key="variant.getId()" :id="variant.getId()" @click="changeColor(step, variant.getId())" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
-                                <div class="color-bg" :style="{background: variant.getColor()}"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="oh br-5 mt-2 fz-9 selection-box">
-                  <div v-for="(step, index) in steps">
-                    <div class="inner-box">
-                      <div v-if="step.getType() == 'Model' && step.getName() == 'Extra Fun '">
-                        <div class="head px-3 py-2 bg-color text-color">
-                          <div class="d-flex align-items-center justify-content-between">
-                            <h3 class="h6 PF mb-0" v-text="step.getName()"></h3>
-                            <div>
-                              <label class="switch">
-                                <input type="checkbox" @click="toggleExtraFun">
-                                <span class="slider round slider2"></span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="p-2" :class="ChooseExtraFun == false ? 'd-none' : ''">
-                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center" v-if="step.getName() == 'Extra Fun '">
-                            <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
-                              <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''" :id="index == 0 ? 'first-extra-fun' : ''">
-                                <img :src="variant.getThumbnail()" class="border img-fluid br-5">
-                                <p class="mb-0" v-text="variant.getName()"></p>
-                                <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div v-if="step.getType() == 'Shape'" :class="ChooseExtraFun == false ? 'd-none' : ''">
-                        <div class="p-2" v-if="step.getName() == 'Extra Fun Colour '">
-                          <p class="fz-15 mb-1" v-text="step.getName()"></p>
-                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center">
-                            <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
-                              <div :key="variant.getId()" :id="variant.getId()" @click="changeColor(step, variant.getId())" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
-                                <div class="color-bg" :style="{background: variant.getColor()}"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="oh br-5 mt-2 fz-9 selection-box">
-                  <div v-for="(step, index) in steps">
-                    <div class="inner-box">
-                      <div v-if="step.getType() == 'Model' && (step.getName() != 'Extra Fun ' && step.getName() != 'Choose Base Thickness' && step.getName() != 'Choose Your Armrests')">
-                        <div class="head px-3 py-2 bg-color text-color">
-                          <h3 class="h6 PF mb-0" v-text="step.getName()"></h3>
-                        </div>
-                        <div class="p-2">
-                          <div class="d-flex flex-nowrap oxs remove-scrollbar text-center" v-if="step.getName() != 'Extra Fun ' && step.getName() != 'Choose Base Thickness' && step.getName() != 'Choose Your Armrests'">
-                            <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
-                              <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
-                                <img :src="variant.getThumbnail()" class="border img-fluid br-5">
-                                <p class="mb-0" v-text="variant.getName()"></p>
-                                <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div v-if="step.getType() == 'Shape'">
-                        <div class="p-2" v-if="step.getName() != 'Lower Base Colour ' && step.getName() != 'Upper Base Colour ' && step.getName() != 'Upper Base Colour' && step.getName() != 'Trapezium Colour' && step.getName() != 'Extra Fun Colour ' && step.getName() != 'Armrest Colour '">
+                        <div class="p-2" v-if="" :class="step.getName() == 'Trapezium Colour' ? 'border-top' : ''">
                           <p class="fz-15 mb-1" v-text="step.getName()"></p>
                           <div class="d-flex flex-nowrap oxs remove-scrollbar text-center">
                             <div v-for="(variant, index) in step.getAvailableVariants()" class="p-1 select-variant">
@@ -264,7 +171,7 @@
       data() {
         return {
           integrationProductId: 'b8b74dc9-655b-474e-b2b6-338db397e689',
-          workflowId: '653b6369-89d1-4302-ba1e-ee50117e3c73',
+          workflowId: 'c3252ca3-6d7f-4f6f-b1f1-0c7b78233369',
           canvasRefEle: this.$refs<HTMLCanvasElement | null>(null),
           client: new SpiffCommerceClient({}),
           workflowExperience: null,
