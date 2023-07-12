@@ -16113,6 +16113,9 @@ fieldset:disabled #BT5 .btn {
 }
 
 /* custom */
+#product-customiser{
+  touch-action: none;
+}
 #product-customiser #BT5 #preview{
   max-width: 100%;
   max-height: 100%;
