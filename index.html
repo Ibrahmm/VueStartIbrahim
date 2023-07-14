@@ -18,7 +18,7 @@
   <div id="product-customiser">
     <div id="BT5">
       <div class="container-fluid">
-        <div class="row">
+        <div class="row pt-lg-0 pt-2">
           <div class="col-lg-8">
             <canvas id="preview" ref="canvasRef"></canvas>
           </div>
@@ -150,7 +150,14 @@
                         <p class="mb-0 ps-1">$<span v-text="price"></span>.00</p>
                       </div>
                       <div>
-                        <button class="btn add-to-cart-btn btn-style br-30" @click="addToCart">Add To Cart</button>
+                        <button class="btn add-to-cart-btn btn-style br-30 d-flex align-items-center justify-content-center" @click="addToCart">
+                          Add To Cart
+                          <span class="ps-2 spinner-box" :class="{'d-flex': showSpinner}">
+                            <svg class="spinner" viewBox="0 0 50 50">
+                              <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                            </svg>
+                          </span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -167,6 +174,7 @@
   <script type="module">
     import { SpiffCommerceClient } from '@spiffcommerce/core';
     import { SpiffCommerce3DPreviewService } from '@spiffcommerce/preview';
+    import axios from 'axios';
     Vue.createApp({
       data() {
         return {
@@ -179,8 +187,10 @@
           totalPrice: 0,
           price: 0,
           showPopup: false,
-          ChooseYourArmrests: false,
-          ChooseExtraFun: false,
+          ChooseYourArmrests: true,
+          ChooseExtraFun: true,
+          showSpinner: false,
+          showAddToCart: true,
         }
       },
       mounted(){
@@ -213,6 +223,8 @@
           const renderableSteps = scenes.flatMap((s) => s.renderableSteps);
           const steps = this.workflowExperience.getSteps().filter((s) => renderableSteps.includes(s.getId()));
           this.steps = steps;
+          // const metadata = this.workflowExperience.onDesignFinished("35073dca-dc50-4bfe-b670-81349d8a1ac6");
+          // console.log(metadata);
         },
         changeColor(currentStep, currentVariantID){
           currentStep.getColors().then(function(result) {
@@ -242,26 +254,33 @@
             document.getElementById('first-extra-fun').click();
           }
         },
-        addToCart(){
-          // fetch('https://www.funsquare.com.au/cart/add.js', {
-          //   method: 'POST',
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          //   body: JSON.stringify({
-          //     quantity: 1,
-          //     id: this.,
-          //   }),
-          // }).then((response) => response.json())
-          //   .then((data) => {
-          //     console.log(data.id);
-          //     this.$nextTick(() => {
-          //       this.$emit('cart:build');
-          //     });
-          //   })
-          //   .catch((error) => {
-          //     console.error(error);
-          //   });
+        async addToCart(){
+          this.showSpinner = true;
+          this.showAddToCart = false;
+          const metadata = await  this.workflowExperience.onDesignFinished();
+          console.log(metadata);
+
+          fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              quantity: 1,
+              id: metadata.designProductVariantId || metadata.designProductId,
+              properties: {
+                _spiffTransactionId: metadata.transactionId
+              }
+            }),
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data.id);
+            window.location = '/cart';
+          })
+          .catch((error) => {
+            console.error(error);
+          });
         }
       }
     }).mount("#product-customiser");
