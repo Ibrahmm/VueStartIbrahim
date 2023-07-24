@@ -34,7 +34,8 @@
                   <hr>
                   <br>
                 </div>
-                <p class="mb-0 fz-20">$<span v-text="price"></span>.00</p>
+                <p class="mb-0 fz-20">A$<span v-text="price"></span>.00</p>
+                <!-- <p class="mb-0 fz-20" v-text="exptotalPrice"></p> -->
               </div>
               <div class="selection-boxes">
                 <div class="oh br-5 fz-9">
@@ -60,7 +61,8 @@
                                 <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''" :id="index == 0 ? 'first-armrests' : ''">
                                   <img :src="variant.getThumbnail()" class="border img-fluid br-5">
                                   <p class="mb-0" v-text="variant.getName()"></p>
-                                  <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
+                                  <!-- <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p> -->
+                                  <p class="mb-0" v-text="formatCentsToDollars(variant.getPrice())"></p>
                                 </div>
                               </div>
                             </div>
@@ -73,7 +75,8 @@
                                 <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''" :id="index == 0 ? 'first-extra-fun' : ''">
                                   <img :src="variant.getThumbnail()" class="border img-fluid br-5">
                                   <p class="mb-0" v-text="variant.getName()"></p>
-                                  <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
+                                  <!-- <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p> -->
+                                  <p class="mb-0" v-text="formatCentsToDollars(variant.getPrice())"></p>
                                 </div>
                               </div>
                             </div>
@@ -85,7 +88,8 @@
                               <div :key="variant.getId()" @click="step.selectVariant(variant)" class="variant-image" :class="step.getCurrentVariant().getId() == variant.getId() ? 'selected' : ''">
                                 <img :src="variant.getThumbnail()" class="border img-fluid br-5">
                                 <p class="mb-0" v-text="variant.getName()"></p>
-                                <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p>
+                                <!-- <p class="mb-0">$<span v-text="Number(((variant.getPrice()) / 100).toFixed(2))"></span>.00</p> -->
+                                <p class="mb-0" v-text="formatCentsToDollars(variant.getPrice())"></p>
                               </div>
                             </div>
                           </div>
@@ -269,7 +273,8 @@
               quantity: 1,
               id: metadata.designProductVariantId || metadata.designProductId,
               properties: {
-                _spiffTransactionId: metadata.transactionId
+                _spiffTransactionId: metadata.transactionId,
+                _selectedVariants: metadata.selectedVariants
               }
             }),
           })
@@ -281,6 +286,15 @@
           .catch((error) => {
             console.error(error);
           });
+        },
+        formatCentsToDollars(cents) {
+            const dollars = cents / 100;
+            // Format dollars with currency symbol and commas
+            const formattedDollars = dollars.toLocaleString("en-US", {
+                style: "currency",
+                currency: "AUD",
+            });
+            return formattedDollars;
         }
       }
     }).mount("#product-customiser");
